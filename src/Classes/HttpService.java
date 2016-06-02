@@ -5,10 +5,7 @@ import Interface.IHttpResponse;
 import Interface.IHttpService;
 
 import javax.naming.Context;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -28,16 +25,31 @@ public class HttpService implements IHttpService {
             for(int i = 0; i<param.length; i++){
                 writer.println(request.getParameter(param[i]));
             }
-            writer.println("");
+
             //System.out.println(path);
 
             if (!Files.isDirectory(Paths.get(path))) {
                 try {
-                    Files.lines(Paths.get(path)).forEach(writer::println);
+//                    Files.lines(Paths.get(path)).forEach(writer::println);
+                    FileInputStream input;
+                    writer.println("content-type:" + Files.probeContentType(Paths.get(request.getAbsolutePath())));
+                    writer.println("");
+                    input = new FileInputStream(new File(request.getAbsolutePath()));
+                    BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
+                    BufferedInputStream reader = new BufferedInputStream(input);
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = reader.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                    reader.close();
+                    out.flush();
+                    out.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
+                writer.println("");
                 File file = new File(path);
                 //System.out.println(path);
                 String requestedURI = path.substring(path.length());
@@ -45,10 +57,10 @@ public class HttpService implements IHttpService {
                 writer.println("<html><body>");
                 writer.print("<h1>Directory " + path + "</h1>");
                 writer.print("<ul>");
-                writer.print("<li><a href=\"" + requestedURI + "..\">..</a></li>");
-                /*for(int i=0; i<listOfFiles.length; i++) {
-                    writer.println("<li><a href=\""+requestedURI + listOfFiles[i]+"\">"+listOfFiles[i]+"</a></li>");
-                }*/
+
+
+                if(!path.equals(request.getRootPath()+"/"))
+                    writer.print("<li><a href=\"" + requestedURI + "..\">..</a></li>");
 
                 // Directory
                 for(File f : file.listFiles(new FileFilter() {

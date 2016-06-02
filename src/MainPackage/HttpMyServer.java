@@ -78,10 +78,10 @@ public class HttpMyServer {
         Socket forward = new Socket(myProxy.getHotst(serverNumber),myProxy.getPort(serverNumber));
 
         PrintWriter writer = new PrintWriter(forward.getOutputStream(),true);
-        PrintWriter writer2 = new PrintWriter(clientSocket.getOutputStream(),true);
+        BufferedOutputStream writer2 = new BufferedOutputStream(clientSocket.getOutputStream());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        BufferedReader br2 = new BufferedReader(new InputStreamReader(forward.getInputStream()));
+        BufferedInputStream br2 = new BufferedInputStream(forward.getInputStream());
 
         String str;
 
@@ -93,7 +93,12 @@ public class HttpMyServer {
         }
 
         int i =0;
-        while ((str = br2.readLine()) != null )
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = br2.read(buffer)) != -1) {
+            writer2.write(buffer, 0, bytesRead);
+        }
+        /*while ((str = br2.readLine()) != null )
         {
             writer2.println(str);
             if (str.equals("") ) {
@@ -101,8 +106,10 @@ public class HttpMyServer {
                 if(i >1 )
                 break;
             }
-        }
+        }*/
         writer2.close();
+        forward.close();
+        clientSocket.close();
 
     }
 

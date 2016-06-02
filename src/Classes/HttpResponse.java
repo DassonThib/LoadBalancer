@@ -54,7 +54,12 @@ public class HttpResponse implements IHttpResponse{
 
     @Override
     public OutputStream getOutputStream() {
-        return this.ops;
+        try{
+            return socket.getOutputStream();
+        } catch(IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

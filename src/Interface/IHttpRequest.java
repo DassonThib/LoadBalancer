@@ -11,4 +11,5 @@ public interface IHttpRequest {
     String getMethod();
     String getRelativePath();
     String getAbsolutePath();
+    String getRootPath();
 }
