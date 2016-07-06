@@ -6,9 +6,7 @@ import java.net.Socket;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -200,34 +198,72 @@ public class HttpRequest implements IHttpRequest {
     }
 
     public void downloadFile(String fileName,String path) {
-        InputStream inputStream = null;
-        try {
-            File file = new File(path+getRelativePath());
-            if( file.isDirectory() || !file.exists() ) {
-                System.out.println("No file to download.");
-                return;
-            }
-            inputStream = new FileInputStream(file);
-            String saveFilePath = getRootPath()+"\\dl\\" + fileName;
-            File saved = new File(saveFilePath);
-            saved.createNewFile();
-            FileOutputStream outputStream = new FileOutputStream(saved);
-            int bytesRead = -1;
-            byte[] buffer = new byte[BUFFER_SIZE];
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            outputStream.close();
-            System.out.println("File downloaded");
-        } catch (IOException ex) {
-//            Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        List<File> files = getPartFile(fileName+".txt");
+        if(files!=null) {
+            InputStream inputStream = null;
+            File file = new File(fileName);
             try {
-                if( inputStream != null )
-                    inputStream.close();
+                FileGestionaire.mergeFiles(files, file);
+
+                if (file.isDirectory() || !file.exists()) {
+                    System.out.println("No file to download.");
+                    return;
+                }
+                inputStream = new FileInputStream(file);
+                String saveFilePath = getRootPath() + "\\dl\\" + fileName;
+                File saved = new File(saveFilePath);
+                saved.createNewFile();
+                FileOutputStream outputStream = new FileOutputStream(saved);
+                int bytesRead = -1;
+                byte[] buffer = new byte[BUFFER_SIZE];
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.close();
+                System.out.println("File downloaded");
             } catch (IOException ex) {
-                Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    if (inputStream != null)
+                        inputStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        }else{
+            System.out.println("No file to download.");
+            return;
         }
+    }
+
+    private List<File> getPartFile(String fileName){
+        ArrayList<File> files = new ArrayList<>();
+        File file = new File(fileName);
+        if(file.exists()){
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line = "";
+                File f;
+                while ((line = br.readLine())!=null){
+                    f = new File(line);
+                    if(f.exists()){
+                        files.add(f);
+                    }
+                }
+                br.close();
+                return files;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }else{
+            return null;
+        }
+
     }
 }
