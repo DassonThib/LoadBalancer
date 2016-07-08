@@ -199,41 +199,38 @@ public class HttpRequest implements IHttpRequest {
 
     public void downloadFile(String fileName,String path) {
         List<File> files = getPartFile(fileName+".txt");
-        if(files!=null) {
-            InputStream inputStream = null;
-            File file = new File(fileName);
-            try {
-                FileGestionaire.mergeFiles(files, file);
 
-                if (file.isDirectory() || !file.exists()) {
-                    System.out.println("No file to download.");
-                    return;
-                }
-                inputStream = new FileInputStream(file);
-                String saveFilePath = getRootPath() + "\\dl\\" + fileName;
-                File saved = new File(saveFilePath);
-                saved.createNewFile();
-                FileOutputStream outputStream = new FileOutputStream(saved);
-                int bytesRead = -1;
-                byte[] buffer = new byte[BUFFER_SIZE];
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-                outputStream.close();
-                System.out.println("File downloaded");
-            } catch (IOException ex) {
-//            Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    if (inputStream != null)
-                        inputStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        InputStream inputStream = null;
+        File file = new File(fileName);
+        try {
+            if(files!=null) {
+                FileGestionaire.mergeFiles(files, file);
             }
-        }else{
-            System.out.println("No file to download.");
-            return;
+            if (file.isDirectory() || !file.exists()) {
+                System.out.println("No file to download.");
+                return;
+            }
+            inputStream = new FileInputStream(file);
+            String saveFilePath = getRootPath() + "\\dl\\" + fileName;
+            File saved = new File(saveFilePath);
+            saved.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(saved);
+            int bytesRead = -1;
+            byte[] buffer = new byte[BUFFER_SIZE];
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.close();
+            System.out.println("File downloaded");
+        } catch (IOException ex) {
+//            Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (inputStream != null)
+                    inputStream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(HttpRequest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
