@@ -1,3 +1,4 @@
+package MainPackage;
 
 import Classes.FileGestionaire;
 
@@ -10,7 +11,10 @@ import java.util.List;
  */
 public class TestClass {
     public static void main(String[] args) throws IOException {
-        String fileName = "01 Main Title and The Attack on the.m4a";
+        HttpMyServer server = new HttpMyServer(82);
+        server.initProxy();
+        server.run();
+       /* String fileName = "01 Main Title and The Attack on the.m4a";
         File f = new File(fileName);
 
         List<File> files = getPartFile(fileName+".txt");
@@ -19,11 +23,11 @@ public class TestClass {
             System.out.println("ok");
         }else{
             System.out.println("not ok");
-        }
+        }*/
         //FileGestionaire.splitFile(f);
     }
 
-    private static List<File> getPartFile(String fileName){
+   /* private static List<File> getPartFile(String fileName){
         ArrayList<File> files = new ArrayList<>();
         File file = new File(fileName);
         if(file.exists()){
@@ -51,6 +55,6 @@ public class TestClass {
             return null;
         }
 
-    }
+    }*/
 
 }
