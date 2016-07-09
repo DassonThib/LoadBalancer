@@ -96,8 +96,9 @@ public class HttpRequest implements IHttpRequest {
                 }
                 // }
             } while ((str = br.readLine()) != null );
-            if(method.contains("POST") && i >1)
+            if(method.contains("POST") && i >1) {
                 doPost();
+            }
         }
     }
 
@@ -153,6 +154,7 @@ public class HttpRequest implements IHttpRequest {
         String str = "";
 
         File yourFile = new File(getRootPath()+"\\files\\"+(String)getParameter(" filename"));
+
         if(!yourFile.exists()) {
             try {
                 yourFile.createNewFile();
@@ -192,6 +194,7 @@ public class HttpRequest implements IHttpRequest {
 
         try {
             FileGestionaire.splitFile(yourFile);
+            downloadFile(yourFile.getAbsolutePath()+".txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -218,6 +221,7 @@ public class HttpRequest implements IHttpRequest {
             }
             inputStream = new FileInputStream(file);
             String saveFilePath = getRootPath() + "\\dl\\" + fileName;
+            System.out.println(saveFilePath);
             File saved = new File(saveFilePath);
             saved.createNewFile();
             FileOutputStream outputStream = new FileOutputStream(saved);

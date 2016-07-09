@@ -8,7 +8,7 @@ public class Serveur {
 
     public static void main(String[] args) throws IOException{
 
-            HttpMyServer server = new HttpMyServer(80);
+            HttpMyServer server = new HttpMyServer(81);
             server.initProxy();
             server.run();
     }
