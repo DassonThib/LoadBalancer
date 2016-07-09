@@ -43,6 +43,7 @@ public class HttpMyServer {
                 vhostName = vhostName.trim();
                 // Host information
                 String hostname = (String) prop.getOrDefault(vhostName + ".path", "*");
+                System.out.println(hostname);
                 int portConf = Integer.valueOf(((String) prop.getOrDefault(vhostName + ".port", "80")));
 
                 myProxy.setServer(hostname,new Integer(portConf));
@@ -61,11 +62,12 @@ public class HttpMyServer {
         while(true){
             clientSocket = socket.accept();
             pool.submit(1, () -> {
-                try {
+                /*try {
                     startForward();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
+                handleRequest(clientSocket);
             });
        }
     }

@@ -12,7 +12,7 @@ public class FileGestionaire {
     public static void splitFile(File f) throws IOException {
         int partCounter = 1;//I like to name parts from 001, 002, 003, ...
         //you can change it to 0 if you want 000, 001, ...
-        File partList = new File(f.getName()+".txt");
+        File partList = new File(f.getAbsolutePath()+".txt");
         FileWriter fileWriter = new FileWriter(partList);
         int sizeOfFiles = 1024 * 1024;// 1MB
         byte[] buffer = new byte[sizeOfFiles];

@@ -160,7 +160,7 @@ public class HttpRequest implements IHttpRequest {
                 e.printStackTrace();
             }
         }
-        /*FileOutputStream outputStream = null;
+        FileOutputStream outputStream = null;
         try {
             outputStream =
                     new FileOutputStream(yourFile);
@@ -188,7 +188,7 @@ public class HttpRequest implements IHttpRequest {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
 
         try {
             FileGestionaire.splitFile(yourFile);
@@ -205,7 +205,7 @@ public class HttpRequest implements IHttpRequest {
 
     public void downloadFile(String fileName,String path) {
         List<File> files = getPartFile(fileName+".txt");
-
+        System.out.println(fileName);
         InputStream inputStream = null;
         File file = new File(fileName);
         try {
